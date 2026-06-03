@@ -1,0 +1,398 @@
+/* Premium Design Tokens */
+:root {
+    --bg-color: #050508;
+    --text-primary: #ffffff;
+    --text-secondary: #8e8e93;
+    --accent-blue: #0071e3;
+    --accent-glow: rgba(0, 113, 227, 0.4);
+    --glass-bg: rgba(255, 255, 255, 0.03);
+    --glass-border: rgba(255, 255, 255, 0.08);
+}
+
+/* Global Reset & Base Setup */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+}
+
+html {
+    scroll-behavior: auto;
+    background-color: var(--bg-color);
+    scrollbar-width: thin;
+    scrollbar-color: var(--glass-border) transparent;
+}
+
+/* Custom Scrollbar for Webkit Browsers */
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: var(--glass-border);
+    border-radius: 10px;
+    transition: background 0.3s ease;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+body {
+    font-family: 'Outfit', 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    overflow-x: hidden;
+    /* Height is now automatic to contain both the animation section and text sections */
+    height: auto;
+    min-height: 100vh;
+}
+
+/* Sticky Canvas Container inside the h-[400vh] animation-section */
+.canvas-container {
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 1;
+    overflow: hidden;
+    background-color: var(--bg-color);
+}
+
+#animation-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Premium Dark Loader Overlay */
+.loader-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #000000;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.loader-overlay.fade-out {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.loader-content {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.spinner-box {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin-bottom: 24px;
+}
+
+.circular-progress {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.bg-circle {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.05);
+    stroke-width: 4px;
+}
+
+.fg-circle {
+    fill: none;
+    stroke: var(--accent-blue);
+    stroke-linecap: round;
+    stroke-width: 4px;
+    /* Circumference is 2 * pi * r = 2 * 3.14159 * 45 = 282.7 */
+    stroke-dasharray: 282.7;
+    stroke-dashoffset: 282.7;
+    filter: drop-shadow(0 0 6px var(--accent-glow));
+    transition: stroke-dashoffset 0.1s ease-out;
+}
+
+.progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+}
+
+.loader-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+}
+
+.loader-subtitle {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 300;
+}
+
+/* Scroll Hint Overlay (Absolute inside the animation section) */
+.scroll-hint {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.scroll-hint.hidden {
+    opacity: 0;
+    transform: translate(-50%, 20px);
+    pointer-events: none;
+}
+
+.mouse-icon {
+    width: 24px;
+    height: 38px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    position: relative;
+}
+
+.mouse-wheel {
+    width: 4px;
+    height: 8px;
+    background-color: var(--text-primary);
+    border-radius: 2px;
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: scroll-wheel 1.6s infinite ease-in-out;
+}
+
+.scroll-text {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    font-weight: 600;
+    animation: pulse-text 2s infinite ease-in-out;
+}
+
+/* Glassmorphic Progress Indicator (Fixed for tracker float) */
+.scroll-progress-container {
+    position: fixed;
+    right: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 24px 12px;
+    border-radius: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.scroll-progress-container.visible {
+    opacity: 1;
+}
+
+.scroll-progress-track {
+    width: 2px;
+    height: 120px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 1px;
+    overflow: hidden;
+    position: relative;
+}
+
+.scroll-progress-bar {
+    width: 100%;
+    height: 0%;
+    background: linear-gradient(to bottom, #0071e3, #33a1ff);
+    box-shadow: 0 0 10px var(--accent-glow);
+    border-radius: 1px;
+    transition: height 0.1s ease-out;
+}
+
+.scroll-percentage-text {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    min-width: 30px;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Custom layout classes for stitched sections */
+.brand-stripe {
+    position: relative;
+}
+.brand-stripe::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 10%;
+    height: 80%;
+    width: 4px;
+    background-color: #bb0013;
+}
+.refreshment-gradient {
+    background: linear-gradient(135deg, #f9f9f9 0%, #eeeeee 100%);
+}
+
+/* Diet Coke Logo Image & Subheading Styling on Scroll Canvas */
+.diet-coke-logo-img {
+    filter: drop-shadow(0 0 24px rgba(192, 0, 20, 0.4)) 
+            drop-shadow(0 0 4px rgba(192, 0, 20, 0.65));
+    will-change: filter;
+}
+
+.subheading-text {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    font-size: clamp(0.7rem, 1.8vw, 1.1rem);
+    color: #ffffff;
+    margin-top: 1.5rem;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+    opacity: 0.9;
+}
+
+/* Premium Navigation Bar Styling */
+header.main-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 80px;
+    z-index: 50;
+    background: rgba(5, 5, 8, 0);
+    border-bottom: 1px solid transparent;
+    transition: background 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+                border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+                box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+header.main-nav .logo-nav {
+    color: #ffffff;
+    transition: color 0.4s ease;
+}
+
+header.main-nav .nav-link {
+    color: rgba(255, 255, 255, 0.65);
+    transition: color 0.3s ease, border-color 0.3s ease;
+    padding: 8px 0;
+    border-bottom: 2px solid transparent;
+}
+
+header.main-nav .nav-link:hover {
+    color: #ffffff;
+}
+
+header.main-nav .nav-link.active {
+    color: #ffffff;
+    border-bottom-color: #ffffff;
+}
+
+header.main-nav .nav-cta {
+    background-color: #c00014;
+    color: #ffffff;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 14px rgba(192, 0, 20, 0.3);
+}
+
+header.main-nav .nav-cta:hover {
+    background-color: #a00010;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(192, 0, 20, 0.4);
+}
+
+header.main-nav .nav-cta:active {
+    transform: translateY(0);
+}
+
+/* Scrolled Contrast State (Over light website backgrounds) */
+header.main-nav.scrolled {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.02);
+}
+
+header.main-nav.scrolled .logo-nav {
+    color: #1a1c1c;
+}
+
+header.main-nav.scrolled .nav-link {
+    color: rgba(26, 28, 28, 0.65);
+}
+
+header.main-nav.scrolled .nav-link:hover {
+    color: #c00014;
+}
+
+header.main-nav.scrolled .nav-link.active {
+    color: #c00014;
+    border-bottom-color: #c00014;
+}
+
+/* Keyframe Animations */
+@keyframes scroll-wheel {
+    0% {
+        top: 6px;
+        opacity: 1;
+    }
+    50% {
+        top: 16px;
+        opacity: 0.1;
+    }
+    100% {
+        top: 6px;
+        opacity: 1;
+    }
+}
+
+@keyframes pulse-text {
+    0%, 100% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 1;
+        color: var(--text-primary);
+    }
+}
