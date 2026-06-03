@@ -21,8 +21,8 @@ let targetFrameIndex = 0;
 const lerpFactor = 0.07; // Easing intensity (0.05 to 0.1 is optimal for smooth inertia)
 let isAnimating = false;
 
-// Helper to format frame filename (e.g. ezgif-frame-001.jpg)
-const getFrameUrl = (index) => `ezgif-frame-${index.toString().padStart(3, '0')}.jpg`;
+// Helper to format frame filename (e.g. frames/ezgif-frame-001.jpg)
+const getFrameUrl = (index) => `frames/ezgif-frame-${index.toString().padStart(3, '0')}.jpg`;
 
 // Preload Images
 function preloadImages() {
